@@ -1,0 +1,41 @@
+---
+- name: Deploy Drupal CMS
+  hosts: drupal
+  become: yes
+  connection: local
+
+  vars:
+    postgresql_postgres_password: "postgres"
+    postgresql_login_user: "postgres"
+    postgresql_login_password: "postgres"
+    postgresql_login_host: "localhost"
+    postgresql_users:
+      - name: drupal
+        password: drupalpass
+    postgresql_databases:
+      - name: drupal
+        owner: drupal
+
+    pre_tasks:
+      - name: Set become for PostgreSQL tasks
+        set_fact:
+          ansible_become: true
+
+    composer_path: /usr/local/bin/composer
+    drupal_domain: "drupal.local"
+    drupal_install_site: true
+    drupal_site_name: "My Drupal Site"
+    drupal_admin_user: admin
+    drupal_admin_password: adminpass
+    drupal_admin_email: admin@example.com
+    drupal_db_user: drupal
+    drupal_db_password: drupalpass
+    drupal_db_name: drupal
+    drupal_db_backend: pgsql
+
+  roles:
+    - geerlingguy.nginx
+    - geerlingguy.postgresql
+    - geerlingguy.php
+    - geerlingguy.drupal
+
